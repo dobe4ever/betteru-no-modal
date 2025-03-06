@@ -74,7 +74,7 @@ export function HabitsSheet() {
 
       <SheetContent 
         side="bottom" 
-        className="flex flex-col p-0 bg-gradient-orange h-[100vh] rounded-t-xl overflow-hidden [&>button]:text-white"
+        className="flex flex-col p-0 bg-gradient-orange h-[100vh] rounded-t-xl overflow-hidden [&>button]:text-white [&>button>svg]:stroke-[3]"
       >
         <SheetHeader className="flex flex-row items-center justify-between p-4 pb-0">
           <SheetTitle className="text-title-white">Habits</SheetTitle>
