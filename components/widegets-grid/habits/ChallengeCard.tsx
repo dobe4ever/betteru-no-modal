@@ -1,18 +1,14 @@
 // components/widegets-grid/habits/ChallengeCard.tsx
 
 import { useState } from "react"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { ChevronRight } from "lucide-react"
 import { CustomSlider } from "@/components/custom-components/custom-slider"
-import { motion, AnimatePresence } from "framer-motion"
+import { AnimatePresence, motion } from "framer-motion"
 import { Challenge } from "./HabitsData"
-
-// Constants
-const WEEK_IN_DAYS = 7
-const MIN_WEEKS = 1
-const MAX_WEEKS = 12
+import { WEEK_IN_DAYS, MIN_WEEKS, MAX_WEEKS, formatDuration } from "./utils"
 
 export function ChallengeCard({ 
   challenge, 
@@ -21,22 +17,14 @@ export function ChallengeCard({
   isExpanded, 
   setIsExpanded 
 }: { 
-  challenge: Challenge | null; 
-  setChallenge: (challenge: Challenge) => void; 
-  totalHabits: number; 
-  isExpanded: boolean; 
+  challenge: Challenge | null
+  setChallenge: (challenge: Challenge) => void
+  totalHabits: number
+  isExpanded: boolean
   setIsExpanded: (isExpanded: boolean) => void 
 }) {
   const [duration, setDuration] = useState(WEEK_IN_DAYS)
   const [habitPercentage, setHabitPercentage] = useState(60)
-
-  const formatDuration = (days: number) => {
-    const weeks = Math.floor(days / 7)
-    if (weeks === 1) return "1 week"
-    if (weeks < 4) return `${weeks} weeks`
-    const months = Math.floor(weeks / 4)
-    return `${months} ${months === 1 ? "month" : "months"}`
-  }
 
   const handleStartChallenge = () => {
     const newChallenge = {
@@ -52,15 +40,18 @@ export function ChallengeCard({
 
   return (
     <Card className="mb-4">
-      <CardContent className="p-4">
-        <div className="flex justify-between items-center cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
-          <h3 className="text-lg font-semibold text-orange-main">
+      <CardHeader className="p-4 pb-0 cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
+        <div className="flex justify-between items-center">
+          <CardTitle className="text-lg font-semibold text-orange-main">
             {challenge ? "Current Challenge" : "Start a Challenge"}
-          </h3>
+          </CardTitle>
           <ChevronRight
             className={`h-5 w-5 text-orange-main transition-transform duration-300 ${isExpanded ? "rotate-90" : ""}`}
           />
         </div>
+      </CardHeader>
+      
+      <CardContent className="p-4 pt-2">
         <AnimatePresence>
           {isExpanded && (
             <motion.div
@@ -68,7 +59,7 @@ export function ChallengeCard({
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="overflow-hidden mt-4"
+              className="overflow-hidden"
             >
               {challenge ? (
                 <div className="space-y-2">
@@ -85,7 +76,7 @@ export function ChallengeCard({
                   </div>
                 </div>
               ) : (
-                <div className="space-y-6">
+                <div className="space-y-4">
                   <div>
                     <div className="flex justify-between items-center mb-2">
                       <Label>Duration:</Label>
@@ -99,7 +90,6 @@ export function ChallengeCard({
                       onValueChange={(value) => setDuration(value[0])}
                     />
                   </div>
-
 
                   <div>
                     <div className="flex justify-between items-center mb-2">
@@ -115,22 +105,24 @@ export function ChallengeCard({
                     />
                   </div>
 
-                  <div className="pt-4">
-                    <p className="text-sm text-gray-500 mb-4">
-                      You'll need to complete at least {Math.ceil((habitPercentage / 100) * totalHabits)} out of{" "}
-                      {totalHabits} habits each day for {formatDuration(duration)}.
-                    </p>
-
-                    <Button onClick={handleStartChallenge} className="w-full">
-                      Start Challenge
-                    </Button>
-                  </div>
+                  <p className="text-sm text-gray-500">
+                    You'll need to complete at least {Math.ceil((habitPercentage / 100) * totalHabits)} out of{" "}
+                    {totalHabits} habits each day for {formatDuration(duration)}.
+                  </p>
                 </div>
               )}
             </motion.div>
           )}
         </AnimatePresence>
       </CardContent>
+
+      {isExpanded && !challenge && (
+        <CardFooter className="p-4 pt-0">
+          <Button onClick={handleStartChallenge} className="w-full">
+            Start Challenge
+          </Button>
+        </CardFooter>
+      )}
     </Card>
   )
 }
