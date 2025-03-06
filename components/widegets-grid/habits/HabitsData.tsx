@@ -28,17 +28,18 @@ export interface Habit {
       id: "1", 
       title: "Morning Meditation", 
       completed: false, 
+      streak: 5,
+      repeating: true, 
       pinned: true, 
       hasAlarm: true, 
-      time: "07:00", 
-      streak: 5 
+      time: "07:00",
+      notes: "Focus on breath for 10 minutes"
     },
     { 
       id: "2", 
       title: "Read for 30 minutes", 
       completed: true, 
-      repeating: true, 
-      days: ["Mon", "Wed", "Fri"], 
+      repeating: false, 
       streak: 12 
     },
     { 

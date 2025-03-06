@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
-import { Check } from "lucide-react"
+import { Check, Calendar, Repeat, Pin, AlarmClock, FileText } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 import { Habit } from "./HabitsData"
 
@@ -21,7 +22,10 @@ export function HabitSettings({
   onClose: () => void 
 }) {
   const [editedHabit, setEditedHabit] = useState({ ...habit })
-  const [isDaily, setIsDaily] = useState(!habit.repeating)
+  const [repeatOption, setRepeatOption] = useState(
+    !habit.repeating ? "once" : 
+    habit.days && habit.days.length > 0 ? "custom" : "daily"
+  )
 
   const handleDayToggle = (day: string) => {
     const newDays = editedHabit.days?.includes(day)
@@ -32,10 +36,11 @@ export function HabitSettings({
   }
 
   const handleSave = () => {
-    // Apply daily/repeating status
+    // Apply the correct repeat settings based on selected option
     const updatedHabit = {
       ...editedHabit,
-      repeating: !isDaily
+      repeating: repeatOption !== "once",
+      days: repeatOption === "daily" ? [] : editedHabit.days
     }
     
     onUpdateHabit(updatedHabit)
@@ -61,41 +66,84 @@ export function HabitSettings({
               />
             </div>
 
-            {/* Daily Habit Toggle */}
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium">Daily Habit</p>
-                <p className="text-sm text-gray-500">Repeat this habit every day</p>
+            {/* Repeat Habit Options */}
+            <div className="space-y-4">
+              <Label className="text-base font-medium">Repeat Habit</Label>
+              
+              <div className="grid grid-cols-3 gap-3">
+                <Button
+                  type="button"
+                  variant={repeatOption === "once" ? "default" : "outline"}
+                  className={cn(
+                    "flex flex-col items-center justify-center h-24 space-y-2 text-center",
+                    repeatOption === "once" ? "border-2 border-orange-500" : ""
+                  )}
+                  onClick={() => setRepeatOption("once")}
+                >
+                  <div className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center">
+                    <Check className={cn("h-5 w-5", repeatOption === "once" ? "text-orange-500" : "text-gray-400")} />
+                  </div>
+                  <p className="text-sm font-medium">Only Once</p>
+                </Button>
+                
+                <Button
+                  type="button"
+                  variant={repeatOption === "daily" ? "default" : "outline"}
+                  className={cn(
+                    "flex flex-col items-center justify-center h-24 space-y-2 text-center",
+                    repeatOption === "daily" ? "border-2 border-orange-500" : ""
+                  )}
+                  onClick={() => setRepeatOption("daily")}
+                >
+                  <div className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center">
+                    <Repeat className={cn("h-5 w-5", repeatOption === "daily" ? "text-orange-500" : "text-gray-400")} />
+                  </div>
+                  <p className="text-sm font-medium">Every Day</p>
+                </Button>
+                
+                <Button
+                  type="button"
+                  variant={repeatOption === "custom" ? "default" : "outline"}
+                  className={cn(
+                    "flex flex-col items-center justify-center h-24 space-y-2 text-center",
+                    repeatOption === "custom" ? "border-2 border-orange-500" : ""
+                  )}
+                  onClick={() => setRepeatOption("custom")}
+                >
+                  <div className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center">
+                    <Calendar className={cn("h-5 w-5", repeatOption === "custom" ? "text-orange-500" : "text-gray-400")} />
+                  </div>
+                  <p className="text-sm font-medium">Select Days</p>
+                </Button>
               </div>
-              <Switch 
-                checked={isDaily} 
-                onCheckedChange={setIsDaily}
-              />
+              
+              {/* Weekly Schedule for custom option */}
+              {repeatOption === "custom" && (
+                <div className="space-y-3 mt-4">
+                  <Label>Select days of the week</Label>
+                  <div className="flex flex-wrap gap-2">
+                    {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
+                      <Button
+                        key={day}
+                        onClick={() => handleDayToggle(day)}
+                        variant={editedHabit.days?.includes(day) ? "default" : "outline"}
+                        className="w-12 h-12 p-0 rounded-full"
+                      >
+                        {day.charAt(0).toUpperCase()}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
-            {/* Weekly Schedule */}
-            {!isDaily && (
-              <div className="space-y-3">
-                <Label>Weekly Schedule</Label>
-                <div className="flex gap-2">
-                  {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
-                    <Button
-                      key={day}
-                      onClick={() => handleDayToggle(day)}
-                      variant={editedHabit.days?.includes(day) ? "default" : "outline"}
-                      className="w-8 h-8 p-0 rounded-full"
-                    >
-                      {day.charAt(0).toUpperCase()}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-            )}
-
             {/* Reminder Time */}
-            <div className="space-y-2">
+            <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <Label htmlFor="reminder-time">Set Reminder</Label>
+                <div className="flex items-center gap-2">
+                  <AlarmClock className={cn("h-5 w-5", editedHabit.hasAlarm ? "text-orange-500" : "text-gray-400")} />
+                  <Label htmlFor="reminder-time" className="text-base font-medium">Set Reminder</Label>
+                </div>
                 <Switch 
                   checked={editedHabit.hasAlarm} 
                   onCheckedChange={(checked) => setEditedHabit({ ...editedHabit, hasAlarm: checked })}
@@ -112,12 +160,14 @@ export function HabitSettings({
               )}
             </div>
 
-
             {/* Pin Habit */}
             <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium">Pin this habit</p>
-                <p className="text-sm text-gray-500">Prioritize this habit in your list</p>
+              <div className="flex items-center gap-2">
+                <Pin className={cn("h-5 w-5", editedHabit.pinned ? "text-orange-500" : "text-gray-400")} />
+                <div>
+                  <p className="font-medium">Pin this habit</p>
+                  <p className="text-sm text-gray-500">Prioritize this habit in your list</p>
+                </div>
               </div>
               <Switch 
                 checked={editedHabit.pinned} 
@@ -126,8 +176,11 @@ export function HabitSettings({
             </div>
 
             {/* Notes */}
-            <div className="space-y-2">
-              <Label htmlFor="notes">Notes</Label>
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <FileText className={cn("h-5 w-5", editedHabit.notes ? "text-orange-500" : "text-gray-400")} />
+                <Label htmlFor="notes" className="text-base font-medium">Notes</Label>
+              </div>
               <textarea
                 id="notes"
                 className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-orange-500 min-h-[100px]"
