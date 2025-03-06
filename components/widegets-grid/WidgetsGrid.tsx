@@ -1,7 +1,7 @@
 "use client"
 
 import { PromoCard } from "./promo-card/PromoCard"
-import { HabitsDrawer } from "./habits/HabitsDrawer"
+import { HabitsSheet } from "./habits/HabitsSheet"
 import { TodosDrawer } from "./todos/TodosDrawer"
 import { CheckinDrawer } from "./checkin/CheckinDrawer"
 import { AnalyticsDrawer } from "./analytics/AnalyticsDrawer"
@@ -15,7 +15,7 @@ export function WidgetsGrid() {
   return (
     <div className="flex flex-col overflow-hidden w-full bg-white p-2 gap-2 rounded-t-xl">
       <PromoCard />
-      <HabitsDrawer />
+      <HabitsSheet />
       <TodosDrawer />
       <div className="grid grid-cols-2 gap-2">
         <div>
