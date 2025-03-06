@@ -33,7 +33,7 @@ export function HabitList({
   const filteredHabits = habits.filter(habit => showCompleted || !habit.completed)
 
   return (
-    <Card className="flex-grow overflow-hidden w-full">
+    <Card className="flex-grow overflow-hidden w-full rounded-b">
       <CardHeader className="p-0 space-y-0">
         {/* Date Navigation */}
         <div className="flex justify-between items-center p-3 pb-2">

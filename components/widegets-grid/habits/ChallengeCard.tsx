@@ -39,7 +39,7 @@ export function ChallengeCard({
   }
 
   return (
-    <Card className="mb-4">
+    <Card className="m-2 mt-0">
       <CardHeader className="p-4 pb-0 cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
         <div className="flex justify-between items-center">
           <CardTitle className="text-lg font-semibold text-orange-main">

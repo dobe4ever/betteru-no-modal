@@ -76,11 +76,11 @@ export function HabitsSheet() {
         side="bottom" 
         className="flex flex-col p-0 bg-gradient-orange h-[100vh] rounded-t-xl overflow-hidden"
       >
-        <SheetHeader className="flex flex-row items-center justify-between p-4 pb-2">
+        <SheetHeader className="flex flex-row items-center justify-between p-4 pb-0">
           <SheetTitle className="text-title-white">Habits</SheetTitle>
         </SheetHeader>
 
-        <div className="flex-grow overflow-auto px-4 pb-4">
+        <div className="flex flex-col h-full">
           <ChallengeCard
             challenge={challenge}
             setChallenge={setChallenge}
