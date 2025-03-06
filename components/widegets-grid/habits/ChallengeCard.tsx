@@ -40,7 +40,7 @@ export function ChallengeCard({
 
   return (
     <Card className="m-2 mt-0">
-      <CardHeader className="p-4 pb-0 cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
+      <CardHeader className="p-3 pb-0 cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
         <div className="flex justify-between items-center">
           <CardTitle className="text-lg font-semibold text-orange-main">
             {challenge ? "Current Challenge" : "Start a Challenge"}
@@ -51,7 +51,7 @@ export function ChallengeCard({
         </div>
       </CardHeader>
       
-      <CardContent className="p-4 pt-2">
+      <CardContent className="">
         <AnimatePresence>
           {isExpanded && (
             <motion.div
