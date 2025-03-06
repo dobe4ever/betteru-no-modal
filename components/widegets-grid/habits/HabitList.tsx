@@ -1,41 +1,57 @@
-// components/widegets-grid/habits/HabitList.tsx
-
+import { useState } from "react"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
 import { Eye, EyeOff, ChevronLeft, ChevronRight, Plus } from "lucide-react"
 import { HabitCard } from "./HabitCard"
+import { HabitSettings } from "./HabitSettings"
 import { Habit } from "./HabitsData"
-import { formatDate, isToday } from "./utils"
+import { formatDate, isToday, getWeekDates } from "./utils"
+import { Input } from "@/components/ui/input"
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
-export function HabitList({ 
-  habits, 
-  showCompleted, 
-  onToggleHabitCompleted, 
-  onToggleCompletedVisibility,
-  onEditHabit,
-  selectedDate,
-  setSelectedDate,
-  dates,
-  onAddHabitClick
-}: { 
-  habits: Habit[]
-  showCompleted: boolean
-  onToggleHabitCompleted: (id: string) => void
-  onToggleCompletedVisibility: (value: boolean) => void
-  onEditHabit: (habit: Habit) => void
-  selectedDate: Date
-  setSelectedDate: (date: Date) => void
-  dates: Date[]
-  onAddHabitClick: () => void
-}) {
+export function HabitList({ habits, setHabits }: { habits: Habit[], setHabits: (habits: Habit[]) => void }) {
+  const [showCompleted, setShowCompleted] = useState(true)
+  const [selectedDate, setSelectedDate] = useState(new Date())
+  const [editingHabit, setEditingHabit] = useState<Habit | null>(null)
+  const [isAddingHabit, setIsAddingHabit] = useState(false)
+  const [newHabitTitle, setNewHabitTitle] = useState("")
+
+  const dates = getWeekDates()
+
   const filteredHabits = habits.filter(habit => showCompleted || !habit.completed)
+
+  const handleToggleCompleted = (id: string) => {
+    setHabits(habits.map(habit => 
+      habit.id === id ? { ...habit, completed: !habit.completed } : habit
+    ))
+  }
+
+  const handleUpdateHabit = (updatedHabit: Habit) => {
+    setHabits(habits.map(habit => 
+      habit.id === updatedHabit.id ? updatedHabit : habit
+    ))
+    setEditingHabit(null)
+  }
+
+  const handleAddHabit = () => {
+    if (newHabitTitle.trim()) {
+      const newHabit: Habit = { 
+        id: Date.now().toString(), 
+        title: newHabitTitle, 
+        completed: false,
+        streak: 0
+      }
+      setHabits([...habits, newHabit])
+      setNewHabitTitle("")
+      setIsAddingHabit(false)
+    }
+  }
 
   return (
     <Card className="flex-grow overflow-hidden w-full rounded-b">
       <CardHeader className="p-0 space-y-0">
-        {/* Date Navigation */}
         <div className="flex justify-between items-center p-3 pb-2">
           <Button
             variant="ghost"
@@ -72,7 +88,6 @@ export function HabitList({
           </Button>
         </div>
 
-        {/* Date Dots */}
         <div className="flex justify-center gap-2 pb-2 px-3">
           {dates.map((date) => (
             <button
@@ -90,12 +105,11 @@ export function HabitList({
 
         <Separator />
 
-        {/* Action Buttons */}
         <div className="flex justify-between items-center p-3">
           <Button
             variant="ghost"
             size="icon"
-            onClick={onAddHabitClick}
+            onClick={() => setIsAddingHabit(true)}
             className="h-8 w-8 p-0 rounded-full bg-orange-50 text-orange-500 hover:bg-orange-100"
           >
             <Plus className="h-4 w-4" />
@@ -104,7 +118,7 @@ export function HabitList({
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => onToggleCompletedVisibility(!showCompleted)}
+            onClick={() => setShowCompleted(!showCompleted)}
             title={showCompleted ? "Hide completed habits" : "Show completed habits"}
             className="h-8 w-8 p-0"
           >
@@ -119,7 +133,6 @@ export function HabitList({
         <Separator />
       </CardHeader>
 
-      {/* Habits List */}
       <CardContent className="p-0 h-[calc(85vh-200px)]">
         <ScrollArea className="h-full">
           <div className="p-2">
@@ -128,8 +141,8 @@ export function HabitList({
                 <HabitCard
                   key={habit.id}
                   habit={habit}
-                  onToggleCompleted={() => onToggleHabitCompleted(habit.id)}
-                  onEditClick={() => onEditHabit(habit)}
+                  onToggleCompleted={() => handleToggleCompleted(habit.id)}
+                  onEditClick={() => setEditingHabit(habit)}
                 />
               ))
             ) : (
@@ -142,6 +155,40 @@ export function HabitList({
           </div>
         </ScrollArea>
       </CardContent>
+
+      {editingHabit && (
+        <HabitSettings
+          habit={editingHabit}
+          onUpdateHabit={handleUpdateHabit}
+          onClose={() => setEditingHabit(null)}
+        />
+      )}
+
+      <Dialog open={isAddingHabit} onOpenChange={setIsAddingHabit}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Add New Habit</DialogTitle>
+          </DialogHeader>
+          <div className="py-3">
+            <Input
+              value={newHabitTitle}
+              onChange={(e) => setNewHabitTitle(e.target.value)}
+              placeholder="Enter habit title..."
+              className="w-full"
+              autoFocus
+              onKeyDown={(e) => e.key === "Enter" && handleAddHabit()}
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsAddingHabit(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleAddHabit} disabled={!newHabitTitle.trim()}>
+              Add Habit
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Card>
   )
 }
