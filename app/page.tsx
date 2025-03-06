@@ -5,7 +5,7 @@ import { Header } from "@/components/header/Header"
 import { StickyTop } from "@/components/sticky-top/StickyTop"
 import { WidgetsGrid } from "@/components/widegets-grid/WidgetsGrid"
 import { ChatbotDrawer } from "@/components/chatbot/ChatbotDrawer"
-import { EditProfile } from "@/components/profile/EditProfile"
+// import { EditProfile } from "@/components/profile/EditProfile"
 import { AuthProvider } from "@/components/auth/AuthProvider"
 
 export default function Home() {

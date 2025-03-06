@@ -61,7 +61,7 @@
   html, #__next {
   font-family: "Nunito", sans-serif;
   height: 100%;
-  weight: 100%; 
+  font-weight: 100%; 
   padding: 2px;
   }
 
@@ -81,9 +81,35 @@ scrollbar-width: none;
 *::-webkit-scrollbar {
 display: none;
 }
+
+@layer components {
+  .dialog-wrapper {
+    @apply bg-white rounded-3xl border shadow-lg p-4 w-[90%] max-w-sm [&>button]:hidden;
+  }
+  
+  .dialog-header {
+    @apply flex flex-row items-center justify-between px-0 space-y-0;
+  }
+  
+  .dialog-close-btn {
+    @apply border-0 hover:bg-orange-100 rounded-full h-8 w-8 p-1 flex items-center justify-center;
+  }
+  
+  .dialog-title {
+    @apply text-title-orange;
+  }
+  
+  .dialog-footer {
+    @apply sm:justify-center mt-4;
+  }
+  
+  .dialog-submit-btn {
+    @apply w-full bg-orange-500 hover:bg-orange-600 text-white;
+  }
+}
   
 /* Default styles for mobile-first approach */
- {
+.button {
   height: 36px;
   padding: 0 10px;
 }
@@ -118,13 +144,15 @@ display: none;
 
 .text-title-card {
   font-size: 14px;
-  line-height: 1;
+  line-height: 2;
   text-align: left;
 }
 
 .text-description-card {
   text-align: left;
-  color: #5f6368;
+  color: #babbbc;
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 .text-big-percent-number {

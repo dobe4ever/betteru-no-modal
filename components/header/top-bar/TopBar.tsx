@@ -1,19 +1,20 @@
-import { HamburgerBtn } from "./hamburger-btn"
+// components/header/top-bar/TopBar.tsx
+import { MenuDropdown } from "./MenuDropdown"
 import { LogoWhite } from "./logo"
-import { NotificationBtn } from "./notification-btn"
-import { ProfileBtn } from "./profile-btn"
+import { NotificationsDropdown } from "./NotificationsDropdown"
+import { ProfileDropdown } from "./ProfileDropdown"
 
 export function TopBar() {
   return (
     <div className="relative pl-1 p-2 pr-2 z-10">
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-4">
-          <HamburgerBtn />
+          <MenuDropdown />
           <LogoWhite />
         </div>
         <div className="flex items-center gap-3">
-          <NotificationBtn />
-          <ProfileBtn />
+          <NotificationsDropdown />
+          <ProfileDropdown />
         </div>
       </div>
     </div>
