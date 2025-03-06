@@ -1,87 +1,83 @@
+// components/floating-btn/ChatbotDrawer.tsx
 "use client"
 
+import * as React from "react"
 import { useState } from "react"
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { MessageSquare, Send, Bot } from 'lucide-react'
-
-interface Message {
-  id: string
-  content: string
-  sender: 'user' | 'bot'
-}
+import * as SheetPrimitive from "@radix-ui/react-dialog"
+import { X } from "lucide-react"
+import { CircleButton } from "@/components/custom-components/custom-buttons"
 
 export function ChatbotDrawer() {
-  const [open, setOpen] = useState(false)
-  const [messages, setMessages] = useState<Message[]>([
-    { id: '1', content: "Hello! How can I assist you today?", sender: 'bot' },
-  ])
-  const [input, setInput] = useState("")
-
-  const handleSend = () => {
-    if (input.trim()) {
-      const newMessage: Message = { id: Date.now().toString(), content: input, sender: 'user' }
-      setMessages([...messages, newMessage])
-      setInput("")
-      // Here you would typically send the message to your AI service and get a response
-      // For now, we'll just simulate a response after a short delay
-      setTimeout(() => {
-        const botResponse: Message = { id: (Date.now() + 1).toString(), content: "I'm an AI assistant. How can I help you?", sender: 'bot' }
-        setMessages(prev => [...prev, botResponse])
-      }, 1000)
-    }
-  }
-
+  // Self-contained state
+  const [isOpen, setIsOpen] = useState(false)
+  
   return (
     <>
-      <Sheet open={open} onOpenChange={setOpen}>
-        <SheetTrigger asChild>
-          <Button
-            size="icon"
-            variant="outline"
-            className="rounded-full fixed bottom-4 right-4 h-14 w-14 shadow-lg bg-white hover:bg-gray-100 border-gray-200 z-50"
+      {/* Trigger button */}
+      <div
+        className="fixed bottom-4 right-4 cursor-pointer"
+        style={{ 
+          zIndex: 10000,
+          position: 'fixed',
+          pointerEvents: 'auto'
+        }}
+        onClick={() => setIsOpen(true)}
+      >
+        <CircleButton 
+          variant="bot"
+          className="shadow-lg"
+        />
+      </div>
+    
+      {/* Drawer component */}
+      <SheetPrimitive.Root open={isOpen} onOpenChange={setIsOpen}>
+        <SheetPrimitive.Portal>
+          {/* Overlay */}
+          <SheetPrimitive.Overlay className="fixed inset-0 z-50 bg-black/20 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
+          
+          {/* Content */}
+          <SheetPrimitive.Content 
+            className="fixed inset-x-0 bottom-0 z-50 h-[100dvh] bg-white
+              data-[state=open]:animate-in data-[state=closed]:animate-out 
+              data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom
+              data-[state=closed]:duration-300 data-[state=open]:duration-400
+              rounded-t-xl border-0 p-0 shadow-lg overflow-hidden"
           >
-            <MessageSquare className="h-6 w-6 text-gray-600" />
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="right" className="w-[400px] sm:w-[540px] p-0">
-          <SheetHeader className="border-b px-6 py-4">
-            <SheetTitle>AI Assistant</SheetTitle>
-          </SheetHeader>
-          <ScrollArea className="h-[calc(100vh-130px)] px-6 py-4">
-            {messages.map((message) => (
-              <div key={message.id} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'} mb-4`}>
-                <div className={`flex items-start ${message.sender === 'user' ? 'flex-row-reverse' : ''}`}>
-                  <Avatar className="w-8 h-8 mr-2">
-                    <AvatarImage src={message.sender === 'user' ? "/user-avatar.png" : "/bot-avatar.png"} />
-                    <AvatarFallback>{message.sender === 'user' ? 'U' : 'B'}</AvatarFallback>
-                  </Avatar>
-                  <div className={`rounded-lg p-3 ${message.sender === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}>
-                    {message.content}
-                  </div>
+            {/* Header */}
+            <div className="flex items-center justify-between px-4 py-3 border-b bg-gradient-to-r from-orange-50 to-orange-100">
+              <h2 className="text-lg font-semibold text-gray-800">
+                AI Assistant
+              </h2>
+              
+              {/* Close button */}
+              <button 
+                onClick={() => setIsOpen(false)}
+                className="text-gray-500 hover:text-gray-800 focus:outline-none"
+              >
+                <X className="h-5 w-5" strokeWidth={2} />
+                <span className="sr-only">Close</span>
+              </button>
+            </div>
+            
+            {/* Content */}
+            <div className="p-4 h-[calc(100%-56px)] overflow-auto">
+              <div className="space-y-4">
+                <div className="bg-gray-100 rounded-lg p-3">
+                  <p className="text-gray-800">Hi there! How can I help you today?</p>
+                </div>
+                
+                <div className="bg-orange-100 rounded-lg p-3 ml-auto max-w-[80%]">
+                  <p className="text-gray-800">I need help with my workout plan.</p>
+                </div>
+                
+                <div className="bg-gray-100 rounded-lg p-3">
+                  <p className="text-gray-800">I can definitely help with that! What specific goals are you looking to achieve with your workout plan?</p>
                 </div>
               </div>
-            ))}
-          </ScrollArea>
-          <div className="border-t px-6 py-4">
-            <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="flex items-center space-x-2">
-              <Input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Type your message..."
-                className="flex-grow"
-              />
-              <Button type="submit" size="icon">
-                <Send className="h-4 w-4" />
-              </Button>
-            </form>
-          </div>
-        </SheetContent>
-      </Sheet>
+            </div>
+          </SheetPrimitive.Content>
+        </SheetPrimitive.Portal>
+      </SheetPrimitive.Root>
     </>
   )
 }
-
