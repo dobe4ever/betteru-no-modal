@@ -274,6 +274,7 @@ export function HabitCard({
             </div>
           </div>
 
+          {/* Collapsible Content */}
           <CollapsibleContent className="space-y-2 px-1 pt-2 border-t border-gray-100 mt-2">
             {habit.hasAlarm && (
               <div className="flex flex-wrap items-center justify-between text-gray-600 gap-2">

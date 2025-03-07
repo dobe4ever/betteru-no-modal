@@ -1,4 +1,5 @@
 // components/widegets-grid/habits/HabitSettings.tsx
+"use client"
 
 import { useState } from "react"
 import { 

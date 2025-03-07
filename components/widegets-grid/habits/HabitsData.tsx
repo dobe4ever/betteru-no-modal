@@ -21,7 +21,7 @@ export interface Habit {
     startDate: Date
     progress: number
   }
-  
+
   // Mock Data
   export const mockHabits: Habit[] = [
     { 
