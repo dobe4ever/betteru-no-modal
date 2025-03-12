@@ -1,3 +1,5 @@
+// components/auth/AuthProvider.tsx
+
 "use client"
 
 import type React from "react"
