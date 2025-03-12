@@ -224,9 +224,9 @@ export function ChallengeCard({ totalHabits }: { totalHabits: number }) {
         <CardHeader className="p-2">
           <div className="flex justify-between items-center">
             <CardTitle >
-            <h1 className="ml-2 scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-orange-500">
+            <h2 className="ml-2 scroll-m-20 text-2xl font-extrabold tracking-tight lg:text-5xl text-orange-500">
               {challenge ? "Current Challenge" : "🔥 Start a Challenge"}
-              </h1>
+              </h2>
             </CardTitle>
             <CollapsibleTrigger asChild>
               <Button variant="ghost" size="sm" className="w-9 p-0">
